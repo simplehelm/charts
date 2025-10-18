@@ -19,12 +19,11 @@ jobs:
         uses: actions/checkout@v5
       - name: Install Helm
         uses: azure/setup-helm@v4
-      - name: Install kubeconform
-        run: |
-          version=$(curl -sL https://api.github.com/repos/yannh/kubeconform/releases/latest | jq -r ".tag_name")
-          echo "Downloading version ${version}"
-          curl -OL https://github.com/yannh/kubeconform/releases/download/${version}/kubeconform-linux-amd64.tar.gz
-          tar xvf kubeconform-linux-amd64.tar.gz
+      - name: Set up Kubeconform
+        id: setup-kubeconform
+        uses: bmuschko/setup-kubeconform@v1
+        with:
+          kubeconform-version: "0.7.0"
       - name: Run kubeconform
         run: |
           echo "Running kubeconform with default values"
@@ -39,16 +38,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Install trivy
-        run: |
-          version=$(curl -sL https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq -r ".tag_name")
-          echo "Downloading version ${version}"
-          curl -OL https://github.com/aquasecurity/trivy/releases/download/${version}/trivy_${version:1}_Linux-AMD64.tar.gz
-          tar xvf trivy_*_Linux-AMD64.tar.gz
-      - name: Run trivy
-        run: |
-          echo "Running trivy with default values"
-          ./trivy conf --exit-code ${{ matrix.chart }}
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: conf
+          scan-ref: ${{ matrix.chart }}
+
   helm_publish_oci:
     name: Publish to OCI Registry
     runs-on: ubuntu-latest
@@ -73,5 +68,17 @@ jobs:
           helm package charts/${{ matrix.chart }}
       - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Check if version exists
+        id: check-version
+        run: |
+          VERSION=$(helm show chart charts/${{ matrix.chart }} | grep '^version:' | cut -d' ' -f2)
+          if helm pull oci://ghcr.io/${{ github.repository_owner }}/${{ matrix.chart }} --version $VERSION 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Chart version $VERSION already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Chart version $VERSION does not exist"
+          fi
       - name: Push to GHCR
+        if: steps.check-version.outputs.exists == 'false'
         run: helm push ${{ matrix.chart }}-*.tgz oci://ghcr.io/${{ github.repository_owner }}
