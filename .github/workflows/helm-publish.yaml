@@ -1,11 +1,11 @@
 permissions:
-  id-token: write # required to use OIDC authentication
-  contents: write
+  contents: read
   packages: write
 concurrency: helm-${{ github.ref }}
 name: Build and Publish Charts
 on:
   push:
+
 jobs:
   kubeconform:
     name: kubeconform
@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        chart: ["mysql"]
+        chart: &chart-list ["mysql"]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -27,14 +27,14 @@ jobs:
       - name: Run kubeconform
         run: |
           echo "Running kubeconform with default values"
-          helm template ${{ matrix.chart }} | kubeconform -summary
+          helm template charts/${{ matrix.chart }} | kubeconform -summary
   trivy:
     name: trivy
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       matrix:
-        chart: ["mysql"]
+        chart: *chart-list
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -42,7 +42,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: conf
-          scan-ref: ${{ matrix.chart }}
+          scan-ref: charts/${{ matrix.chart }}
 
   helm_publish_oci:
     name: Publish to OCI Registry
@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        chart: ["mysql"]
+        chart: *chart-list
     if: github.ref_name == 'main'
     needs: [kubeconform, trivy]
     steps:
