@@ -1,0 +1,21 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.description" . }}
+
+## Overview
+
+This chart deploys MySQL using the official [Docker Library MySQL image](https://hub.docker.com/_/mysql). It provides a simple, secure MySQL deployment with persistent storage.
+
+## Requirements
+
+**Authentication is required**: You must provide either `auth.rootPassword` or `auth.existingSecret` to install this chart. The chart will fail to install without proper authentication configuration.
+
+If using `auth.existingSecret`, the secret must contain:
+- `mysql-root-password`: The MySQL root password
+- `mysql-password`: The MySQL user password (only required if `auth.username` is set)
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

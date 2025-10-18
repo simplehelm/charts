@@ -2,38 +2,40 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Global configuration
+# -- Global configuration
 global:
-  # Major version of MySQL to use as default tag
+  # -- Major version of MySQL to use as default tag and in resource labels
   majorVersion: "8.4"
 
-# MySQL primary configuration (StatefulSet always uses 1 replica for primary)
-
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+# -- Container image configuration
 image:
+  # -- MySQL container image repository
   repository: docker.io/library/mysql
-  # This sets the pull policy for images.
+  # -- Image pull policy
   pullPolicy: IfNotPresent
-  # Overrides the image tag which by default uses global.majorVersion.
+  # -- Overrides the image tag which by default uses global.majorVersion
   tag: ""
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# -- Secrets for pulling images from private registries
 imagePullSecrets: []
-# This is to override the chart name.
+
+# -- Override the chart name
 nameOverride: ""
+# -- Override the full name
 fullnameOverride: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+# -- Pod annotations
 podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+# -- Pod labels
 podLabels: {}
 
+# -- Pod security context
 podSecurityContext:
   fsGroup: 10001
   fsGroupChangePolicy: OnRootMismatch
 
+# -- Container security context
+# @default -- See values.yaml
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
@@ -46,11 +48,8 @@ securityContext:
   seccompProfile:
     type: RuntimeDefault
 
+# -- Resource limits and requests
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -58,33 +57,35 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# MySQL authentication configuration
+# -- MySQL authentication configuration
+# @default -- See values.yaml
 auth:
-  # Use existing secret for credentials
+  # -- Name of existing secret to use for credentials (must contain 'mysql-root-password' key, and 'mysql-password' key if username is set)
   existingSecret: ""
-  # MySQL root password (will be stored in secret)
+  # -- MySQL root password (required if existingSecret is not set)
   rootPassword: ""
-  # MySQL database to create
+  # -- MySQL database to create
   database: ""
-  # MySQL user to create
+  # -- MySQL user to create
   username: ""
-  # MySQL user password (will be stored in secret)
+  # -- MySQL user password
   password: ""
 
-# Additional environment variables
-# MYSQL_USER, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD and MYSQL_DATABASE are managed by the auth section
+# -- Additional environment variables
 env: []
 # - name: MYSQL_MAX_CONNECTIONS
 #   value: "200"
 
-# Persistence configuration
+# -- Persistence configuration
+# @default -- See values.yaml
 persistence:
-  # Storage class for persistent volume
+  # -- Storage class for persistent volume
   storageClass: ""
-  # Size of persistent volume
+  # -- Size of persistent volume
   size: "8Gi"
 
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+# -- Liveness probe configuration
+# @default -- See values.yaml
 livenessProbe:
   exec:
     command:
@@ -96,6 +97,9 @@ livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
+
+# -- Readiness probe configuration
+# @default -- See values.yaml
 readinessProbe:
   exec:
     command:
@@ -108,8 +112,11 @@ readinessProbe:
   periodSeconds: 2
   timeoutSeconds: 1
 
+# -- Node selector for pod assignment
 nodeSelector: {}
 
+# -- Tolerations for pod assignment
 tolerations: []
 
+# -- Affinity for pod assignment
 affinity: {}
