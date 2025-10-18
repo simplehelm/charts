@@ -27,7 +27,7 @@ jobs:
       - name: Run kubeconform
         run: |
           echo "Running kubeconform with default values"
-          helm template ${{ matrix.chart }} | ./kubeconform -summary
+          helm template ${{ matrix.chart }} | kubeconform -summary
   trivy:
     name: trivy
     runs-on: ubuntu-latest
