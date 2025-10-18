@@ -4,13 +4,11 @@
 ![Helm](https://img.shields.io/badge/helm-v3-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-The project aims to provide simple, but secure and well-maintained Helm charts for commonly used open source projects.
+This project aims to provide simple, but secure and well-maintained Helm charts for commonly used open source projects.
 
-Since Bitnami has [chosen to paywall their container images](https://github.com/bitnami/containers/issues/83267), there is now an open question within the community of how to deploy a lot of these common applications.
+Since Bitnami has [chosen to paywall their container images](https://github.com/bitnami/containers/issues/83267), the community has no clear way to deploy many common applications. For many use cases a simple chart with sensible defaults is an ideal solution to this. However despite the existence of freely available and well maintained container images for many of these applications, no clear alternative to Bitnami charts exists. This project aims to change that.
 
-For many use cases a simple chart with sensible defaults is an ideal solution to this. However despite the existence of freely available and well maintained container images for many of these applications, no obvious source of non-Bitnami charts has been created. This project aims to change that.
-
-Initially the targets are MySQL, PostgreSQL and Valkey. However with a library chart, good automation and the support of others I hope this can be sustainably expanded.
+Initial targets include MySQL, PostgreSQL and Valkey. With proper tooling and community support, we plan to expand this sustainably.
 
 ## Project Principles
 
