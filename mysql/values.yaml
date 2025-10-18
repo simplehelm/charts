@@ -32,6 +32,7 @@ podLabels: {}
 
 podSecurityContext:
   fsGroup: 10001
+  fsGroupChangePolicy: OnRootMismatch
 
 securityContext:
   allowPrivilegeEscalation: false
@@ -39,10 +40,9 @@ securityContext:
     drop:
     - ALL
   readOnlyRootFilesystem: true
-  runAsGroup: 19001
+  runAsGroup: 10001
   runAsNonRoot: true
   runAsUser: 10001
-  seLinuxOptions: {}
   seccompProfile:
     type: RuntimeDefault
 
@@ -90,8 +90,9 @@ livenessProbe:
     command:
       - mysqladmin
       - ping
-      - -h
-      - localhost
+      - -u
+      - root
+      - -p$MYSQL_ROOT_PASSWORD
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -100,8 +101,9 @@ readinessProbe:
     command:
       - mysqladmin
       - ping
-      - -h
-      - localhost
+      - -u
+      - root
+      - -p$MYSQL_ROOT_PASSWORD
   initialDelaySeconds: 5
   periodSeconds: 2
   timeoutSeconds: 1
