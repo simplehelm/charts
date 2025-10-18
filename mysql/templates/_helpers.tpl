@@ -31,14 +31,19 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Image tag
+*/}}
+{{- define "mysql.imageTag" -}}
+{{- .Values.image.tag | default .Values.global.majorVersion }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "mysql.labels" -}}
 helm.sh/chart: {{ include "mysql.chart" . }}
 {{ include "mysql.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.global.majorVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -48,15 +53,4 @@ Selector labels
 {{- define "mysql.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "mysql.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "mysql.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "mysql.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}

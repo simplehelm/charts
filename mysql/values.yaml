@@ -2,16 +2,20 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Global configuration
+global:
+  # Major version of MySQL to use as default tag
+  majorVersion: "8.4"
+
 # MySQL primary configuration (StatefulSet always uses 1 replica for primary)
-# replicaCount is not used for StatefulSet
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: docker.io/library/mysql
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "8.4"
+  # Overrides the image tag which by default uses global.majorVersion.
+  tag: ""
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
