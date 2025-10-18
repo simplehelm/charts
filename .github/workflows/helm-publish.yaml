@@ -1,0 +1,77 @@
+permissions:
+  id-token: write # required to use OIDC authentication
+  contents: write
+  packages: write
+concurrency: helm-${{ github.ref }}
+name: Build and Publish Charts
+on:
+  push:
+jobs:
+  kubeconform:
+    name: kubeconform
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        chart: ["mysql"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Install kubeconform
+        run: |
+          version=$(curl -sL https://api.github.com/repos/yannh/kubeconform/releases/latest | jq -r ".tag_name")
+          echo "Downloading version ${version}"
+          curl -OL https://github.com/yannh/kubeconform/releases/download/${version}/kubeconform-linux-amd64.tar.gz
+          tar xvf kubeconform-linux-amd64.tar.gz
+      - name: Run kubeconform
+        run: |
+          echo "Running kubeconform with default values"
+          helm template ${{ matrix.chart }} | ./kubeconform -summary
+  trivy:
+    name: trivy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        chart: ["mysql"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install trivy
+        run: |
+          version=$(curl -sL https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq -r ".tag_name")
+          echo "Downloading version ${version}"
+          curl -OL https://github.com/aquasecurity/trivy/releases/download/${version}/trivy_${version:1}_Linux-AMD64.tar.gz
+          tar xvf trivy_*_Linux-AMD64.tar.gz
+      - name: Run trivy
+        run: |
+          echo "Running trivy with default values"
+          ./trivy conf --exit-code ${{ matrix.chart }}
+  helm_publish_oci:
+    name: Publish to OCI Registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        chart: ["mysql"]
+    if: github.ref_name == 'main'
+    needs: [kubeconform, trivy]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Package with Helm
+        id: package
+        run: |
+          helm package charts/${{ matrix.chart }}
+      - name: Login to GHCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push to GHCR
+        run: helm push ${{ matrix.chart }}-*.tgz oci://ghcr.io/${{ github.repository_owner }}
