@@ -34,8 +34,7 @@ podSecurityContext:
   fsGroup: 10001
   fsGroupChangePolicy: OnRootMismatch
 
-# -- Container security context
-# @default -- See values.yaml
+# -- Security context
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
@@ -84,8 +83,7 @@ persistence:
   # -- Size of persistent volume
   size: "8Gi"
 
-# -- Liveness probe configuration
-# @default -- See values.yaml
+# -- Liveness probe
 livenessProbe:
   exec:
     command:
@@ -98,8 +96,7 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
 
-# -- Readiness probe configuration
-# @default -- See values.yaml
+# -- Readiness probe
 readinessProbe:
   exec:
     command:

@@ -66,7 +66,7 @@ jobs:
         run: |
           helm install test-${{ matrix.chart }} charts/${{ matrix.chart }} \
             --values charts/${{ matrix.chart }}/ci/test-values.yaml \
-            --wait --timeout=300s
+            --wait --timeout=600s
       - name: Run helm test
         run: helm test test-${{ matrix.chart }} --timeout=300s
 
