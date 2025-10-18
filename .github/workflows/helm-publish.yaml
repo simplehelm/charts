@@ -44,6 +44,28 @@ jobs:
           scan-type: conf
           scan-ref: charts/${{ matrix.chart }}
 
+  helm_test:
+    name: helm test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        chart: *chart-list
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+      - name: Install chart
+        run: |
+          helm install test-${{ matrix.chart }} charts/${{ matrix.chart }} \
+            --values charts/${{ matrix.chart }}/ci/test-values.yaml \
+            --wait --timeout=300s
+      - name: Run helm test
+        run: helm test test-${{ matrix.chart }} --timeout=300s
+
   helm_publish_oci:
     name: Publish to OCI Registry
     runs-on: ubuntu-latest
@@ -54,7 +76,7 @@ jobs:
       matrix:
         chart: *chart-list
     if: github.ref_name == 'main'
-    needs: [kubeconform, trivy]
+    needs: [kubeconform, trivy, helm_test]
     steps:
       - name: Checkout
         uses: actions/checkout@v5

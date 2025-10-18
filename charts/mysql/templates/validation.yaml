@@ -1,0 +1,3 @@
+{{- if and (not .Values.auth.existingSecret) (not .Values.auth.rootPassword) }}
+{{- fail "Either auth.rootPassword or auth.existingSecret must be provided" }}
+{{- end }}
