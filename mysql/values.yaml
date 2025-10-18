@@ -66,6 +66,12 @@ auth:
   # MySQL user password (will be stored in secret)
   password: ""
 
+# Additional environment variables
+# MYSQL_USER, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD and MYSQL_DATABASE are managed by the auth section
+env: []
+# - name: MYSQL_MAX_CONNECTIONS
+#   value: "200"
+
 # Persistence configuration
 persistence:
   # Storage class for persistent volume

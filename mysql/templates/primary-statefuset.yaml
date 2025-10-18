@@ -64,6 +64,9 @@ spec:
                   name: {{ .Values.auth.existingSecret | default (include "mysql.fullname" .) }}
                   key: mysql-password
             {{- end }}
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
