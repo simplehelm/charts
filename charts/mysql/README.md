@@ -28,13 +28,13 @@ If using `auth.existingSecret`, the secret must contain:
 | env | list | `[]` | Additional environment variables |
 | fullnameOverride | string | `""` | Override the full name |
 | global | object | `{"majorVersion":"8.4"}` | Global configuration |
-| global.majorVersion | string | `"8.4"` | Major version of MySQL to use as default tag |
+| global.majorVersion | string | `"8.4"` | Major version of MySQL to use as default tag and in resource labels |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/library/mysql","tag":""}` | Container image configuration |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.repository | string | `"docker.io/library/mysql"` | MySQL container image repository |
 | image.tag | string | `""` | Overrides the image tag which by default uses global.majorVersion |
 | imagePullSecrets | list | `[]` | Secrets for pulling images from private registries |
-| livenessProbe | object | `{"exec":{"command":["mysqladmin","ping","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":5}` | Liveness probe configuration |
+| livenessProbe | object | `{"exec":{"command":["mysqladmin","ping","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":5}` | Liveness probe |
 | nameOverride | string | `""` | Override the chart name |
 | nodeSelector | object | `{}` | Node selector for pod assignment |
 | persistence | object | See values.yaml | Persistence configuration |
@@ -43,9 +43,9 @@ If using `auth.existingSecret`, the secret must contain:
 | podAnnotations | object | `{}` | Pod annotations |
 | podLabels | object | `{}` | Pod labels |
 | podSecurityContext | object | `{"fsGroup":10001,"fsGroupChangePolicy":"OnRootMismatch"}` | Pod security context |
-| readinessProbe | object | `{"exec":{"command":["mysqladmin","ping","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":5,"periodSeconds":2,"timeoutSeconds":1}` | Readiness probe configuration |
+| readinessProbe | object | `{"exec":{"command":["mysqladmin","ping","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":5,"periodSeconds":2,"timeoutSeconds":1}` | Readiness probe |
 | resources | object | `{}` | Resource limits and requests |
-| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container security context |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context |
 | tolerations | list | `[]` | Tolerations for pod assignment |
 
 ----------------------------------------------
