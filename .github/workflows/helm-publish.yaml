@@ -9,7 +9,7 @@ on:
 jobs:
   kubeconform:
     name: kubeconform
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       matrix:
@@ -30,7 +30,7 @@ jobs:
           helm template charts/${{ matrix.chart }} | kubeconform -summary
   trivy:
     name: trivy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       matrix:
@@ -75,10 +75,11 @@ jobs:
           kubectl get pods
           kubectl describe pods
           kubectl logs -l app.kubernetes.io/name=mysql --tail=50
+          kubectl logs --previous -l app.kubernetes.io/name=mysql --tail=50
 
   helm_publish_oci:
     name: Publish to OCI Registry
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
