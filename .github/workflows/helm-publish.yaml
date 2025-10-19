@@ -67,14 +67,14 @@ jobs:
           helm install test-${{ matrix.chart }} charts/${{ matrix.chart }} \
             --values charts/${{ matrix.chart }}/ci/test-values.yaml \
             --wait --timeout=300s --debug
+      - name: Run helm test
+        run: helm test test-${{ matrix.chart }} --logs --timeout=300s
       - name: Debug on failure
         if: failure()
         run: |
           kubectl get pods
           kubectl describe pods
           kubectl logs -l app.kubernetes.io/name=mysql --tail=50
-      - name: Run helm test
-        run: helm test test-${{ matrix.chart }} --timeout=300s
 
   helm_publish_oci:
     name: Publish to OCI Registry
