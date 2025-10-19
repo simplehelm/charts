@@ -16,18 +16,19 @@ jobs:
         chart: &chart-list ["mysql"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
       - name: Set up Kubeconform
         id: setup-kubeconform
-        uses: bmuschko/setup-kubeconform@v1
+        uses: bmuschko/setup-kubeconform@5ccaecbbf012bcb1eeeab66e649db64a477ade8f
         with:
           kubeconform-version: "0.7.0"
       - name: Run kubeconform
         run: |
           echo "Running kubeconform with default values"
           helm template charts/${{ matrix.chart }} | kubeconform -summary
+
   trivy:
     name: trivy
     runs-on: ubuntu-24.04
@@ -37,9 +38,9 @@ jobs:
         chart: *chart-list
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Run Trivy vulnerability scanner in fs mode
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8
         with:
           scan-type: conf
           scan-ref: charts/${{ matrix.chart }}
@@ -54,11 +55,11 @@ jobs:
         os: [ubuntu-24.04, ubuntu-24.04-arm]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
       - name: Create kind cluster
-        uses: helm/kind-action@v1
+        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3
         with:
           version: v0.30.0
           kubectl_version: v1.34.0
@@ -90,11 +91,11 @@ jobs:
     needs: [kubeconform, trivy, helm_test]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           fetch-depth: 0
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
       - name: Package with Helm
         id: package
         run: |
