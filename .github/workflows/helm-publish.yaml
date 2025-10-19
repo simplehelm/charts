@@ -46,11 +46,12 @@ jobs:
 
   helm_test:
     name: helm test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       matrix:
         chart: *chart-list
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
