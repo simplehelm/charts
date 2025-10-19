@@ -68,7 +68,7 @@ jobs:
             --values charts/${{ matrix.chart }}/ci/test-values.yaml \
             --wait --timeout=300s --debug
       - name: Run helm test
-        run: sleep 60 && helm test test-${{ matrix.chart }} --logs --timeout=300s
+        run: helm test test-${{ matrix.chart }} --timeout=300s
       - name: Debug on failure
         if: failure()
         run: |
