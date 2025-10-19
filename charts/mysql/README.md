@@ -1,10 +1,11 @@
 # mysql
 
-![Version](https://img.shields.io/badge/version-0.0.1-blue)
-![Alpha](https://img.shields.io/badge/maturity-alpha-red)
-![Trivy](https://img.shields.io/badge/security-trivy-green)
-![Kubeconform](https://img.shields.io/badge/validation-kubeconform-green)
-![Tests](https://img.shields.io/badge/testing-helm--test-green)
+![Chart Version 0.0.1](https://img.shields.io/badge/version-0.0.1-blue)
+![Alpha Maturity - Not Production Ready](https://img.shields.io/badge/maturity-alpha-red)
+![Tested on AMD64 and ARM64 Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm64-lightgrey)
+![Security Scanned with Trivy](https://img.shields.io/badge/security-trivy-green)
+![Kubernetes Manifests Validated with Kubeconform](https://img.shields.io/badge/validation-kubeconform-green)
+![Tested with Helm Tests](https://img.shields.io/badge/testing-helm--test-green)
 
 A simple Helm chart for MySQL
 
