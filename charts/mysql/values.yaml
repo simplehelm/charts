@@ -1,0 +1,124 @@
+# Default values for mysql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Major version of MySQL to use as default tag and in resource labels
+majorVersion: "8.4"
+
+# -- Container image configuration
+image:
+  # -- MySQL container image repository
+  repository: docker.io/library/mysql
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag which by default uses majorVersion
+  tag: ""
+
+# -- Secrets for pulling images from private registries
+imagePullSecrets: []
+
+# -- Override the chart name
+nameOverride: ""
+# -- Override the full name
+fullnameOverride: ""
+
+# -- Pod annotations
+podAnnotations: {}
+# -- Pod labels
+podLabels: {}
+
+# -- Pod security context
+podSecurityContext:
+  fsGroup: 10001
+  fsGroupChangePolicy: OnRootMismatch
+
+# -- Security context
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsGroup: 10001
+  runAsNonRoot: true
+  runAsUser: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- Resource limits and requests
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# -- MySQL authentication configuration
+# @default -- See values.yaml
+auth:
+  # -- Name of existing secret to use for credentials (must contain 'mysql-root-password' key, and 'mysql-password' key if username is set)
+  existingSecret: ""
+  # -- MySQL root password (required if existingSecret is not set)
+  rootPassword: ""
+  # -- MySQL database to create
+  database: ""
+  # -- MySQL user to create
+  username: ""
+  # -- MySQL user password
+  password: ""
+
+# -- Additional environment variables
+env: []
+# - name: MYSQL_MAX_CONNECTIONS
+#   value: "200"
+
+# -- Persistence configuration
+# @default -- See values.yaml
+persistence:
+  # -- Storage class for persistent volume
+  storageClass: ""
+  # -- Size of persistent volume
+  size: "8Gi"
+
+# -- Liveness probe
+livenessProbe:
+  exec:
+    command:
+      - mysqladmin
+      - ping
+      - -h
+      - 127.0.0.1
+      - -u
+      - root
+      - -p$MYSQL_ROOT_PASSWORD
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -- Readiness probe
+readinessProbe:
+  exec:
+    command:
+      - mysqladmin
+      - ping
+      - -h
+      - 127.0.0.1
+      - -u
+      - root
+      - -p$MYSQL_ROOT_PASSWORD
+  initialDelaySeconds: 5
+  periodSeconds: 2
+  timeoutSeconds: 1
+
+# -- Node selector for pod assignment
+nodeSelector: {}
+
+# -- Tolerations for pod assignment
+tolerations: []
+
+# -- Affinity for pod assignment
+affinity: {}
+
+# -- Priority class name for pod scheduling
+priorityClassName: ""

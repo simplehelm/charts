@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+# Check if helm-docs is installed
+if ! command -v helm-docs &> /dev/null; then
+    echo "helm-docs not found, installing..."
+    version="1.14.2"
+    curl -sSL "https://github.com/norwoodj/helm-docs/releases/download/v${version}/helm-docs_${version}_Linux_x86_64.tar.gz" | tar -xz -C /tmp
+    sudo mv /tmp/helm-docs /usr/local/bin/
+fi
+
+# Run helm-docs
+helm-docs --chart-search-root=charts
+
+# Check if any files were modified
+if ! git diff --quiet; then
+    echo "helm-docs updated README files. Please review and commit the changes."
+    git status --porcelain
+    exit 1
+fi

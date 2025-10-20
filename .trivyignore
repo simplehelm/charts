@@ -1,0 +1,11 @@
+# We intentionally leave resources unset by default
+AVD-KSV-0011
+AVD-KSV-0015
+AVD-KSV-0016
+AVD-KSV-0018
+
+# We intentionally do not set the namespace by default
+AVD-KSV-0110
+
+# We consider docker.io a trusted registry
+AVD-KSV-0125

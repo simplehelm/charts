@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "mysql.fullname" . }}-test-connection"
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  containers:
+    - name: mysql-test
+      image: "{{ .Values.image.repository }}:{{ include "mysql.imageTag" . }}"
+      command:
+        - sh
+        - -c
+        - |
+          echo "Testing root user connection..."
+          mysql -h {{ include "mysql.fullname" . }}-primary -u root -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1 as root_test;"
+          {{- if and .Values.auth.username .Values.auth.database }}
+          echo "Testing database user connection..."
+          mysql -h {{ include "mysql.fullname" . }}-primary -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -D "$MYSQL_DATABASE" -e "SELECT 1 as user_test; SHOW TABLES;"
+          {{- end }}
+          echo "All tests passed!"
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.auth.existingSecret | default (include "mysql.fullname" .) }}
+              key: mysql-root-password
+        {{- if .Values.auth.username }}
+        - name: MYSQL_USER
+          value: {{ .Values.auth.username | quote }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.auth.existingSecret | default (include "mysql.fullname" .) }}
+              key: mysql-password
+        {{- end }}
+        {{- if .Values.auth.database }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.auth.database | quote }}
+        {{- end }}

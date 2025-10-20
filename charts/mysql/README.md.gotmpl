@@ -1,0 +1,58 @@
+{{ template "chart.header" . }}
+
+![Chart Version {{ .Version }}](https://img.shields.io/badge/version-{{ .Version }}-blue)
+![Alpha Maturity - Not Production Ready](https://img.shields.io/badge/maturity-alpha-red)
+![Tested on AMD64 and ARM64 Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm64-lightgrey)
+![Security Scanned with Trivy](https://img.shields.io/badge/security-trivy-green)
+![Kubernetes Manifests Validated with Kubeconform](https://img.shields.io/badge/validation-kubeconform-green)
+![Tested with Helm Tests](https://img.shields.io/badge/testing-helm--test-green)
+
+{{ template "chart.description" . }}
+
+## Overview
+
+This chart deploys MySQL using the official [Docker Library MySQL image](https://hub.docker.com/_/mysql). It provides a simple, secure MySQL deployment with persistent storage. Currently it does not support read replicas but it may do in the future.
+
+## Installation
+
+This chart is available as an OCI package from GitHub Container Registry.
+
+### Install from OCI Registry
+
+```bash
+# Install the chart directly from OCI
+helm install my-mysql oci://ghcr.io/simplehelm/mysql --set auth.rootPassword=mypassword
+```
+
+### Install with existing secret
+
+```bash
+# Create secret first
+kubectl create secret generic mysql-secret \
+  --from-literal=mysql-root-password=mypassword
+
+# Install with existing secret
+helm install my-mysql oci://ghcr.io/simplehelm/mysql --set auth.existingSecret=mysql-secret
+```
+
+## Requirements
+
+**Authentication is required**: You must provide either `auth.rootPassword` or `auth.existingSecret`. The chart will fail to install without proper authentication configuration.
+
+If using `auth.existingSecret`, the secret must contain:
+- `mysql-root-password`: The MySQL root password
+- `mysql-password`: The MySQL user password (only required if `auth.username` is set)
+
+## Migration from bitnami/mysql
+
+First, take a backup! Use `mysqldump`, take a `VolumeSnapshot` or transcribe the data onto a stone tablet. I don't mind how you do it, but please do!
+
+Now you've done that, as PersistentVolumeClaims are not deleted along with a StatefulSet. If you have deployed the Bitnami MySQL Helm chart with reasonably standard settings, it should be possible to uninstall your Helm release and then re-deploy this chart with the same name (but a different values file) without losing any data.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+
