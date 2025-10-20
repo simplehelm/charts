@@ -48,3 +48,7 @@ If using `auth.existingSecret`, the secret must contain:
 {{ template "chart.valuesSection" . }}
 
 {{ template "helm-docs.versionFooter" . }}
+
+## Migration from bitnami/mysql
+
+As PersistentVolumeClaims are not deleted along with a StatefulSet. If you have deployed the Bitnami MySQL Helm chart with reasonably standard settings, it should be possible to uninstall your Helm release and then re-deploy this chart with the same name (but a different values file).
