@@ -85,6 +85,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
+              subPath: data
             - name: tmp
               mountPath: /var/run/mysqld
               subPath: mysqld
