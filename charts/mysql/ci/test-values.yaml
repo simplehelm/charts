@@ -1,2 +1,48 @@
+# Test configuration using many available parameters
 auth:
   rootPassword: "testpassword"
+  database: "testdb"
+  username: "testuser"
+  password: "testuserpass"
+
+env:
+  - name: MYSQL_MAX_CONNECTIONS
+    value: "100"
+  - name: MYSQL_INNODB_BUFFER_POOL_SIZE
+    value: "128M"
+
+persistence:
+  size: "1Gi"
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+podAnnotations:
+  test.example.com/ci: "true"
+
+podLabels:
+  test-env: "ci"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  timeoutSeconds: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 2
+  timeoutSeconds: 1
+
+tolerations:
+  - key: "test-node"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
