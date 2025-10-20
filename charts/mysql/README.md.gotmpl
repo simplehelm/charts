@@ -43,12 +43,16 @@ If using `auth.existingSecret`, the secret must contain:
 - `mysql-root-password`: The MySQL root password
 - `mysql-password`: The MySQL user password (only required if `auth.username` is set)
 
+## Migration from bitnami/mysql
+
+First, take a backup! Use `mysqldump`, take a `VolumeSnapshot` or transcribe the data onto a stone tablet. I don't mind how you do it, but please do!
+
+Now you've done that, as PersistentVolumeClaims are not deleted along with a StatefulSet. If you have deployed the Bitnami MySQL Helm chart with reasonably standard settings, it should be possible to uninstall your Helm release and then re-deploy this chart with the same name (but a different values file) without losing any data.
+
 {{ template "chart.requirementsSection" . }}
 
 {{ template "chart.valuesSection" . }}
 
 {{ template "helm-docs.versionFooter" . }}
 
-## Migration from bitnami/mysql
 
-As PersistentVolumeClaims are not deleted along with a StatefulSet. If you have deployed the Bitnami MySQL Helm chart with reasonably standard settings, it should be possible to uninstall your Helm release and then re-deploy this chart with the same name (but a different values file).
