@@ -121,3 +121,6 @@ tolerations: []
 
 # -- Affinity for pod assignment
 affinity: {}
+
+# -- Priority class name for pod scheduling
+priorityClassName: ""

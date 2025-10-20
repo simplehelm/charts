@@ -78,6 +78,7 @@ Now you've done that, as PersistentVolumeClaims are not deleted along with a Sta
 | podAnnotations | object | `{}` | Pod annotations |
 | podLabels | object | `{}` | Pod labels |
 | podSecurityContext | object | `{"fsGroup":10001,"fsGroupChangePolicy":"OnRootMismatch"}` | Pod security context |
+| priorityClassName | string | `""` | Priority class name for pod scheduling |
 | readinessProbe | object | `{"exec":{"command":["mysqladmin","ping","-h","127.0.0.1","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":5,"periodSeconds":2,"timeoutSeconds":1}` | Readiness probe |
 | resources | object | `{}` | Resource limits and requests |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context |
