@@ -15,7 +15,7 @@ spec:
       command:
         - mysql
         - -h
-        - {{ include "mysql.fullname" . }}-primary
+        - {{ include "mysql.fullname" . }}
         - -u
         - root
         - -p$(MYSQL_ROOT_PASSWORD)
