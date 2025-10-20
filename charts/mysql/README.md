@@ -62,14 +62,13 @@ Now you've done that, as PersistentVolumeClaims are not deleted along with a Sta
 | auth.username | string | `""` | MySQL user to create |
 | env | list | `[]` | Additional environment variables |
 | fullnameOverride | string | `""` | Override the full name |
-| global | object | `{"majorVersion":"8.4"}` | Global configuration |
-| global.majorVersion | string | `"8.4"` | Major version of MySQL to use as default tag and in resource labels |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/library/mysql","tag":""}` | Container image configuration |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.repository | string | `"docker.io/library/mysql"` | MySQL container image repository |
-| image.tag | string | `""` | Overrides the image tag which by default uses global.majorVersion |
+| image.tag | string | `""` | Overrides the image tag which by default uses majorVersion |
 | imagePullSecrets | list | `[]` | Secrets for pulling images from private registries |
 | livenessProbe | object | `{"exec":{"command":["mysqladmin","ping","-h","127.0.0.1","-u","root","-p$MYSQL_ROOT_PASSWORD"]},"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":5}` | Liveness probe |
+| majorVersion | string | `"8.4"` | Major version of MySQL to use as default tag and in resource labels |
 | nameOverride | string | `""` | Override the chart name |
 | nodeSelector | object | `{}` | Node selector for pod assignment |
 | persistence | object | See values.yaml | Persistence configuration |

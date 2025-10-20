@@ -2,10 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- Global configuration
-global:
-  # -- Major version of MySQL to use as default tag and in resource labels
-  majorVersion: "8.4"
+# -- Major version of MySQL to use as default tag and in resource labels
+majorVersion: "8.4"
 
 # -- Container image configuration
 image:
@@ -13,7 +11,7 @@ image:
   repository: docker.io/library/mysql
   # -- Image pull policy
   pullPolicy: IfNotPresent
-  # -- Overrides the image tag which by default uses global.majorVersion
+  # -- Overrides the image tag which by default uses majorVersion
   tag: ""
 
 # -- Secrets for pulling images from private registries

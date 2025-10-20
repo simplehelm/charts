@@ -34,7 +34,7 @@ Create chart name and version as used by the chart label.
 Image tag
 */}}
 {{- define "mysql.imageTag" -}}
-{{- .Values.image.tag | default .Values.global.majorVersion }}
+{{- .Values.image.tag | default .Values.majorVersion }}
 {{- end }}
 
 {{/*
@@ -43,7 +43,7 @@ Common labels
 {{- define "mysql.labels" -}}
 helm.sh/chart: {{ include "mysql.chart" . }}
 {{ include "mysql.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.global.majorVersion | quote }}
+app.kubernetes.io/version: {{ .Values.majorVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
