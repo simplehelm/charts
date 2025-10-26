@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "postgresql.fullname" . }}-primary
+  name: {{ include "postgresql.fullname" . }}
   labels:
     {{- include "postgresql.labels" . | nindent 4 }}
     app.kubernetes.io/component: primary
 spec:
-  serviceName: {{ include "postgresql.fullname" . }}-primary
+  serviceName: {{ include "postgresql.fullname" . }}
   replicas: 1
   selector:
     matchLabels:
@@ -85,6 +85,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql
+              subPath: data
             - name: tmp
               mountPath: /var/run/postgresql
               subPath: postgresql
