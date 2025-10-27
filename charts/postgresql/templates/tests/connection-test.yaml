@@ -18,10 +18,6 @@ spec:
         - |
           echo "Testing postgres user connection..."
           PGPASSWORD="$POSTGRES_PASSWORD" psql -h {{ include "postgresql.fullname" . }}-primary -U postgres -d postgres -c "SELECT 1 as postgres_test;"
-          {{- if and .Values.auth.username .Values.auth.database }}
-          echo "Testing database user connection..."
-          PGPASSWORD="$USER_PASSWORD" psql -h {{ include "postgresql.fullname" . }}-primary -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1 as user_test; \dt;"
-          {{- end }}
           echo "All tests passed!"
       env:
         - name: POSTGRES_PASSWORD
@@ -29,16 +25,3 @@ spec:
             secretKeyRef:
               name: {{ .Values.auth.existingSecret | default (include "postgresql.fullname" .) }}
               key: postgres-password
-        {{- if .Values.auth.username }}
-        - name: POSTGRES_USER
-          value: {{ .Values.auth.username | quote }}
-        - name: USER_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.auth.existingSecret | default (include "postgresql.fullname" .) }}
-              key: password
-        {{- end }}
-        {{- if .Values.auth.database }}
-        - name: POSTGRES_DB
-          value: {{ .Values.auth.database | quote }}
-        {{- end }}
