@@ -10,6 +10,10 @@ Since Bitnami has [chosen to paywall their container images](https://github.com/
 
 Initial targets include MySQL, PostgreSQL and Valkey. With proper tooling and community support, we plan to expand this sustainably.
 
+> Simplify, then add lightness
+>
+> -- [<cite>Colin Chapman, founder of Lotus</cite>](https://en.wikipedia.org/wiki/Colin_Chapman)
+
 ## Project Principles
 
 * Keep it simple. We do not aim to cover every use case.
