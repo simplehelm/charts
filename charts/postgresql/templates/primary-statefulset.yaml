@@ -54,19 +54,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.auth.existingSecret | default (include "postgresql.fullname" .) }}
                   key: postgres-password
-            {{- if .Values.auth.database }}
-            - name: CUSTOM_DB
-              value: {{ .Values.auth.database | quote }}
-            {{- end }}
-            {{- if .Values.auth.username }}
-            - name: CUSTOM_USER
-              value: {{ .Values.auth.username | quote }}
-            - name: CUSTOM_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.auth.existingSecret | default (include "postgresql.fullname" .) }}
-                  key: password
-            {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -88,22 +75,13 @@ spec:
               subPath: data
             - name: tmp
               mountPath: /var/run/postgresql
-              subPath: postgresql
+              subPath: run
             - name: tmp
               mountPath: /tmp
               subPath: tmp
-            {{- if and .Values.auth.username .Values.auth.password }}
-            - name: init-scripts
-              mountPath: /docker-entrypoint-initdb.d
-            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
-        {{- if and .Values.auth.username .Values.auth.password }}
-        - name: init-scripts
-          configMap:
-            name: {{ include "postgresql.fullname" . }}-init
-        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

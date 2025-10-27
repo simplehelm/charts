@@ -53,19 +53,15 @@ resources: {}
 # -- PostgreSQL authentication configuration
 # @default -- See values.yaml
 auth:
-  # -- Name of existing secret to use for credentials (must contain 'postgres-password' key, and 'password' key if username is set)
+  # -- Name of existing secret to use for credentials (must contain 'postgres-password' key)
   existingSecret: ""
   # -- postgres (superuser) user password (required if existingSecret is not set)
   postgresPassword: ""
-  # -- Additional database to create
-  database: ""
-  # -- Additional user to create with all privileges on the additional database
-  username: ""
-  # -- Password for additional user
-  password: ""
 
 # -- Additional environment variables
-env: []
+env:
+  - name: POSTGRES_INITDB_ARGS
+    value: "--auth-host=scram-sha-256"
 # - name: POSTGRES_MAX_CONNECTIONS
 #   value: "200"
 
@@ -83,7 +79,7 @@ livenessProbe:
     command:
       - pg_isready
       - -h
-      - 127.0.0.1
+      - localhost
       - -U
       - postgres
   initialDelaySeconds: 30
@@ -96,7 +92,7 @@ readinessProbe:
     command:
       - pg_isready
       - -h
-      - 127.0.0.1
+      - localhost
       - -U
       - postgres
   initialDelaySeconds: 5

@@ -1,15 +1,12 @@
 # Test configuration using many available parameters
 auth:
   postgresPassword: "testpassword"
-  database: "testdb"
-  username: "testuser"
-  password: "testuserpass"
 
 env:
   - name: POSTGRES_MAX_CONNECTIONS
     value: "100"
   - name: POSTGRES_SHARED_BUFFERS
-    value: "128MB"
+    value: "256MB"
 
 persistence:
   size: "1Gi"

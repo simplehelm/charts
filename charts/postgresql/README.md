@@ -13,6 +13,10 @@ A simple Helm chart for PostgreSQL
 
 This chart deploys PostgreSQL using the official [Docker Library PostgreSQL image](https://hub.docker.com/_/postgres). It provides a simple, secure PostgreSQL deployment with persistent storage. Currently it does not support read replicas but it may do in the future.
 
+Unlike the Bitnami chart it does not have the facility to create extra databases or users during initialisation, due to the complexity and security tradeoffs required. If there is sufficient demand we can add the ability to mount external volumes to `/docker-entrypoint-initdb.d/`.
+
+Please see the [documentation for the container image](https://github.com/docker-library/docs/blob/master/postgres/README.md) for additional environment variables you can provide to customise configuration and behaviour.
+
 ## Installation
 
 This chart is available as an OCI package from GitHub Container Registry.
@@ -21,7 +25,7 @@ This chart is available as an OCI package from GitHub Container Registry.
 
 ```bash
 # Install the chart directly from OCI
-helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.rootPassword=mypassword
+helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.postgresPassword=mypassword
 ```
 
 ### Install with existing secret
@@ -29,7 +33,7 @@ helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.rootPass
 ```bash
 # Create secret first
 kubectl create secret generic postgresql-secret \
-  --from-literal=postgresql-root-password=mypassword
+  --from-literal=postgres-password=mypassword
 
 # Install with existing secret
 helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.existingSecret=postgresql-secret
@@ -37,17 +41,14 @@ helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.existing
 
 ## Requirements
 
-**Authentication is required**: You must provide either `auth.rootPassword` or `auth.existingSecret`. The chart will fail to install without proper authentication configuration.
+**Authentication is required**: You must provide either `auth.postgresPassword` or `auth.existingSecret`. The chart will fail to install without proper authentication configuration.
 
 If using `auth.existingSecret`, the secret must contain:
 - `postgres-password`: The postgres user password
-- `password`: The password for an additional user (only required if `auth.username` is set)
 
 ## Migration from bitnami/postgresql
 
-First, take a backup! Use `pg_dump`, take a `VolumeSnapshot` or transcribe the data onto a stone tablet. I don't mind how you do it, but please do!
-
-Now you've done that, as PersistentVolumeClaims are not deleted along with a StatefulSet. If you have deployed the Bitnami PostgreSQL Helm chart with reasonably standard settings, it should be possible to uninstall your Helm release and then re-deploy this chart with the same name (but a different values file) without losing any data.
+The Bitnami chart and container image for PostgreSQL has some quite complex behaviour which makes it very difficult to provide a straight migration path. Unfortunately in this case, we recommend that you use `pg_dump` and `pg_restore` to migrate between charts.
 
 ## Values
 
@@ -55,19 +56,16 @@ Now you've done that, as PersistentVolumeClaims are not deleted along with a Sta
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity for pod assignment |
 | auth | object | See values.yaml | PostgreSQL authentication configuration |
-| auth.database | string | `""` | Additional database to create |
-| auth.existingSecret | string | `""` | Name of existing secret to use for credentials (must contain 'postgres-password' key, and 'password' key if username is set) |
-| auth.password | string | `""` | Password for additional user |
+| auth.existingSecret | string | `""` | Name of existing secret to use for credentials (must contain 'postgres-password' key) |
 | auth.postgresPassword | string | `""` | postgres (superuser) user password (required if existingSecret is not set) |
-| auth.username | string | `""` | Additional user to create with all privileges on the additional database |
-| env | list | `[]` | Additional environment variables |
+| env | list | `[{"name":"POSTGRES_INITDB_ARGS","value":"--auth-host=scram-sha-256"}]` | Additional environment variables |
 | fullnameOverride | string | `""` | Override the full name |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/library/postgres","tag":""}` | Container image configuration |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.repository | string | `"docker.io/library/postgres"` | PostgreSQL container image repository |
 | image.tag | string | `""` | Overrides the image tag which by default uses majorVersion |
 | imagePullSecrets | list | `[]` | Secrets for pulling images from private registries |
-| livenessProbe | object | `{"exec":{"command":["pg_isready","-h","127.0.0.1","-U","postgres"]},"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":5}` | Liveness probe |
+| livenessProbe | object | `{"exec":{"command":["pg_isready","-h","localhost","-U","postgres"]},"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":5}` | Liveness probe |
 | majorVersion | string | `"18"` | Major version of PostgreSQL to use as default tag and in resource labels |
 | nameOverride | string | `""` | Override the chart name |
 | nodeSelector | object | `{}` | Node selector for pod assignment |
@@ -78,7 +76,7 @@ Now you've done that, as PersistentVolumeClaims are not deleted along with a Sta
 | podLabels | object | `{}` | Pod labels |
 | podSecurityContext | object | `{"fsGroup":10001,"fsGroupChangePolicy":"OnRootMismatch"}` | Pod security context |
 | priorityClassName | string | `""` | Priority class name for pod scheduling |
-| readinessProbe | object | `{"exec":{"command":["pg_isready","-h","127.0.0.1","-U","postgres"]},"initialDelaySeconds":5,"periodSeconds":2,"timeoutSeconds":1}` | Readiness probe |
+| readinessProbe | object | `{"exec":{"command":["pg_isready","-h","localhost","-U","postgres"]},"initialDelaySeconds":5,"periodSeconds":2,"timeoutSeconds":1}` | Readiness probe |
 | resources | object | `{}` | Resource limits and requests |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context |
 | tolerations | list | `[]` | Tolerations for pod assignment |
