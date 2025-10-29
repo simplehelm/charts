@@ -1,10 +1,10 @@
-# -- Major version of MySQL to use as default tag and in resource labels
-majorVersion: "8.4"
+# -- Major version of PostgreSQL to use as default tag and in resource labels
+majorVersion: "18"
 
 # -- Container image configuration
 image:
-  # -- MySQL container image repository
-  repository: docker.io/library/mysql
+  # -- PostgreSQL container image repository
+  repository: docker.io/library/postgres
   # -- Image pull policy
   pullPolicy: IfNotPresent
   # -- Overrides the image tag which by default uses majorVersion
@@ -50,23 +50,19 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# -- MySQL authentication configuration
+# -- PostgreSQL authentication configuration
 # @default -- See values.yaml
 auth:
-  # -- Name of existing secret to use for credentials (must contain 'mysql-root-password' key, and 'mysql-password' key if username is set)
+  # -- Name of existing secret to use for credentials (must contain 'postgres-password' key)
   existingSecret: ""
-  # -- MySQL root password (required if existingSecret is not set)
-  rootPassword: ""
-  # -- MySQL database to create
-  database: ""
-  # -- MySQL user to create
-  username: ""
-  # -- MySQL user password
-  password: ""
+  # -- postgres (superuser) user password (required if existingSecret is not set)
+  postgresPassword: ""
 
 # -- Additional environment variables
-env: []
-# - name: MYSQL_MAX_CONNECTIONS
+env:
+  - name: POSTGRES_INITDB_ARGS
+    value: "--auth-host=scram-sha-256"
+# - name: POSTGRES_MAX_CONNECTIONS
 #   value: "200"
 
 # -- Persistence configuration
@@ -81,13 +77,11 @@ persistence:
 livenessProbe:
   exec:
     command:
-      - mysqladmin
-      - ping
+      - pg_isready
       - -h
-      - 127.0.0.1
-      - -u
-      - root
-      - -p$MYSQL_ROOT_PASSWORD
+      - localhost
+      - -U
+      - postgres
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -96,13 +90,11 @@ livenessProbe:
 readinessProbe:
   exec:
     command:
-      - mysqladmin
-      - ping
+      - pg_isready
       - -h
-      - 127.0.0.1
-      - -u
-      - root
-      - -p$MYSQL_ROOT_PASSWORD
+      - localhost
+      - -U
+      - postgres
   initialDelaySeconds: 5
   periodSeconds: 2
   timeoutSeconds: 1

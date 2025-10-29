@@ -1,0 +1,59 @@
+{{ template "chart.header" . }}
+
+![Chart Version {{ .Version }}](https://img.shields.io/badge/version-{{ .Version }}-blue)
+![Alpha Maturity - Not Production Ready](https://img.shields.io/badge/maturity-alpha-red)
+![Tested on AMD64 and ARM64 Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm64-lightgrey)
+![Security Scanned with Trivy](https://img.shields.io/badge/security-trivy-green)
+![Kubernetes Manifests Validated with Kubeconform](https://img.shields.io/badge/validation-kubeconform-green)
+![Tested with Helm Tests](https://img.shields.io/badge/testing-helm--test-green)
+
+{{ template "chart.description" . }}
+
+## Overview
+
+This chart deploys PostgreSQL using the official [Docker Library PostgreSQL image](https://hub.docker.com/_/postgres). It provides a simple, secure PostgreSQL deployment with persistent storage. Currently it does not support read replicas but it may do in the future.
+
+Unlike the Bitnami chart it does not have the facility to create extra databases or users during initialisation, due to the complexity and security tradeoffs required. If there is sufficient demand we can add the ability to mount external volumes to `/docker-entrypoint-initdb.d/`.
+
+Please see the [documentation for the container image](https://github.com/docker-library/docs/blob/master/postgres/README.md) for additional environment variables you can provide to customise configuration and behaviour.
+
+## Installation
+
+This chart is available as an OCI package from GitHub Container Registry.
+
+### Install from OCI Registry
+
+```bash
+# Install the chart directly from OCI
+helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.postgresPassword=mypassword
+```
+
+### Install with existing secret
+
+```bash
+# Create secret first
+kubectl create secret generic postgresql-secret \
+  --from-literal=postgres-password=mypassword
+
+# Install with existing secret
+helm install my-postgres oci://ghcr.io/simplehelm/postgresql --set auth.existingSecret=postgresql-secret
+```
+
+## Requirements
+
+**Authentication is required**: You must provide either `auth.postgresPassword` or `auth.existingSecret`. The chart will fail to install without proper authentication configuration.
+
+If using `auth.existingSecret`, the secret must contain:
+- `postgres-password`: The postgres user password
+
+## Migration from bitnami/postgresql
+
+The Bitnami chart and container image for PostgreSQL has some quite complex behaviour which makes it very difficult to provide a straight migration path. Unfortunately in this case, we recommend that you use `pg_dump` and `pg_restore` to migrate between charts.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+

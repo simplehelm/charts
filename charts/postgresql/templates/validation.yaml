@@ -1,0 +1,3 @@
+{{- if and (not .Values.auth.existingSecret) (not .Values.auth.postgresPassword) }}
+{{- fail "Either auth.postgresPassword or auth.existingSecret must be provided" }}
+{{- end }}
