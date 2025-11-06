@@ -8,7 +8,7 @@ This project aims to provide simple, but secure and well-maintained Helm charts 
 
 Since Bitnami has [chosen to paywall their container images](https://github.com/bitnami/containers/issues/83267), the community has no clear way to deploy many common applications. For many use cases a simple chart with sensible defaults is an ideal solution to this. However despite the existence of freely available and well maintained container images for many of these applications, no clear alternative to Bitnami charts exists. This project aims to change that.
 
-Initial targets include MySQL, PostgreSQL and Valkey. With proper tooling and community support, we plan to expand this sustainably.
+Initial targets include MySQL and PostgreSQL. Previously Valkey was on the list but the project has [already made their own chart that embraces the same values](https://github.com/valkey-io/valkey-helm). With proper tooling and community support, we plan to expand this list sustainably.
 
 > Simplify, then add lightness
 >
