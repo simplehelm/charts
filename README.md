@@ -1,7 +1,8 @@
 # Simple Helm Charts
 
 ![Status](https://img.shields.io/badge/status-under%20development-orange)
-![Helm](https://img.shields.io/badge/helm-v3-blue)
+![Helm v3](https://img.shields.io/badge/helm-v3-blue)
+![Helm v4](https://img.shields.io/badge/helm-v4-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 This project aims to provide simple, but secure and well-maintained Helm charts for commonly used open source projects.
