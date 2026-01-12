@@ -43,6 +43,9 @@ If using `auth.existingSecret`, the secret must contain:
 - `mysql-root-password`: The MySQL root password
 - `mysql-password`: The MySQL user password (only required if `auth.username` is set)
 
+## Initializing fresh instance with pre-existing data
+You can provide `initdbScriptsConfigMap` - chart will mount whole ConfigMap under `/docker-entrypoint-initdb.d`, which can be found in main container [docs](https://hub.docker.com/_/mysql#initializing-a-fresh-instance)
+
 ## Migration from bitnami/mysql
 
 First, take a backup! Use `mysqldump`, take a `VolumeSnapshot` or transcribe the data onto a stone tablet. I don't mind how you do it, but please do!
