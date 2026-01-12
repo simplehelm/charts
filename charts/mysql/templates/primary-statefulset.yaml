@@ -92,9 +92,18 @@ spec:
             - name: tmp
               mountPath: /tmp
               subPath: tmp
+            {{- if .Values.initdbScriptsConfigMap }}
+            - name: initdb-scripts
+              mountPath: /docker-entrypoint-initdb.d
+            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
+        {{- if .Values.initdbScriptsConfigMap }}
+        - name: initdb-scripts
+          configMap:
+            name: {{ .Values.initdbScriptsConfigMap }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
