@@ -69,6 +69,12 @@ env: []
 # - name: MYSQL_MAX_CONNECTIONS
 #   value: "200"
 
+# -- MySQL initialization scripts from an existing ConfigMap
+# The scripts will be mounted into /docker-entrypoint-initdb.d
+# See: https://hub.docker.com/_/mysql (Initializing a fresh instance)
+# @default -- See values.yaml
+initdbScriptsConfigMap: ""
+
 # -- Persistence configuration
 # @default -- See values.yaml
 persistence:
