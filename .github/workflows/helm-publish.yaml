@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
+        uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e
       - name: Set up Kubeconform
         id: setup-kubeconform
         uses: bmuschko/setup-kubeconform@e5d264ec1eafe2314e750c429a9da7639dd5a003
@@ -58,7 +58,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
+        uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e
         with:
           version: ${{ matrix.helm_version }}
       - name: Create kind cluster
@@ -98,7 +98,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
+        uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e
       - name: Package with Helm
         id: package
         run: |
